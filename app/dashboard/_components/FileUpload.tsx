@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react'
 import { UploadCloud } from 'lucide-react'
 import FileItem from './FileItem'
+import type { ParsedStatement } from '@/types/statements'
 
 type ParsedResult = {
   name: string
@@ -12,7 +13,11 @@ type ParsedResult = {
 
 type UploadState = 'idle' | 'loading' | 'done' | 'error'
 
-export default function FileUpload() {
+interface Props {
+  onAnalysisComplete: (data: ParsedStatement) => void
+}
+
+export default function FileUpload({ onAnalysisComplete }: Props) {
   const [isDragging, setIsDragging] = useState(false)
   const [files, setFiles] = useState<File[]>([])
   const [status, setStatus] = useState<UploadState>('idle')
@@ -54,16 +59,38 @@ export default function FileUpload() {
       const formData = new FormData()
       files.forEach(f => formData.append('files', f))
 
-      const res = await fetch('/api/parse-pdf', { method: 'POST', body: formData })
-      if (!res.ok) throw new Error('Error al procesar los archivos')
+      const res = await fetch('/api/statements/parse-pdf', { method: 'POST', body: formData })
+      if (!res.ok) {
+        const { error } = await res.json()
+        throw new Error(error ?? 'Error al procesar los archivos')
+      }
 
-      const data = await res.json()
-      setResults(data.results)
+      const { results: parsed }: { results: ParsedResult[] } = await res.json()
+      if (!parsed?.length) throw new Error('No se pudo extraer texto del PDF')
+
+      setResults(parsed)
+      const { text, name } = parsed[0]
+
+      const analyzeRes = await fetch('/api/statements/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, filename: name }),
+      })
+      if (!analyzeRes.ok) {
+        const { error } = await analyzeRes.json()
+        throw new Error(error ?? 'Error al analizar el estado de cuenta')
+      }
+
+      const { data } = await analyzeRes.json()
+      console.log(data)
+      onAnalysisComplete(data)
       setStatus('done')
     } catch {
       setStatus('error')
     }
   }
+
+
 
   return (
     <section className="bg-white rounded-2xl p-6 shadow-sm">
@@ -78,8 +105,8 @@ export default function FileUpload() {
           onDrop={handleDrop}
           onClick={() => inputRef.current?.click()}
           className={`border-2 border-dashed rounded-xl flex flex-col items-center justify-center cursor-pointer transition-colors ${isDragging
-              ? 'border-violet-400 bg-violet-50'
-              : 'border-neutral-200 hover:border-violet-400 hover:bg-violet-50'
+            ? 'border-violet-400 bg-violet-50'
+            : 'border-neutral-200 hover:border-violet-400 hover:bg-violet-50'
             }`}
         >
           <input
@@ -135,3 +162,6 @@ export default function FileUpload() {
     </section>
   )
 }
+
+
+

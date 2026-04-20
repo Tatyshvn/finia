@@ -1,37 +1,46 @@
 import { TrendingUp, TrendingDown, Scale, Hash } from 'lucide-react'
+import type { StatementSummary } from '@/types/statements'
 
-const stats = [
-  {
-    label: 'Ingresos totales',
-    value: '$0.00',
-    icon: TrendingUp,
-    badgeClass: 'bg-menta-light text-menta-dark',
-    iconClass: 'text-menta',
-  },
-  {
-    label: 'Gastos totales',
-    value: '$0.00',
-    icon: TrendingDown,
-    badgeClass: 'bg-durazno-light text-durazno-dark',
-    iconClass: 'text-durazno',
-  },
-  {
-    label: 'Balance neto',
-    value: '$0.00',
-    icon: Scale,
-    badgeClass: 'bg-lavanda-light text-lavanda-dark',
-    iconClass: 'text-lavanda',
-  },
-  {
-    label: 'Transacciones',
-    value: '0',
-    icon: Hash,
-    badgeClass: 'bg-celeste-light text-celeste-dark',
-    iconClass: 'text-celeste',
-  },
-]
+interface Props {
+  resumen: StatementSummary | null
+  count: number
+}
 
-export default function StatCards() {
+export default function StatCards({ resumen, count }: Props) {
+  const fmt = (n: number) =>
+    `$${n.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`
+
+  const stats = [
+    {
+      label: 'Ingresos totales',
+      value: resumen ? fmt(resumen.total_abonos) : '$0.00',
+      icon: TrendingUp,
+      badgeClass: 'bg-menta-light text-menta-dark',
+      iconClass: 'text-menta',
+    },
+    {
+      label: 'Gastos totales',
+      value: resumen ? fmt(resumen.total_cargos) : '$0.00',
+      icon: TrendingDown,
+      badgeClass: 'bg-durazno-light text-durazno-dark',
+      iconClass: 'text-durazno',
+    },
+    {
+      label: 'Balance neto',
+      value: resumen ? fmt(resumen.total_abonos - resumen.total_cargos) : '$0.00',
+      icon: Scale,
+      badgeClass: 'bg-lavanda-light text-lavanda-dark',
+      iconClass: 'text-lavanda',
+    },
+    {
+      label: 'Transacciones',
+      value: String(count),
+      icon: Hash,
+      badgeClass: 'bg-celeste-light text-celeste-dark',
+      iconClass: 'text-celeste',
+    },
+  ]
+
   return (
     <section>
       <h2 className="text-lg font-semibold text-neutral-900 mb-4">Resumen</h2>
