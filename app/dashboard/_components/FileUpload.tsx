@@ -104,8 +104,8 @@ export default function FileUpload({ onAnalysisComplete }: Props) {
           onDrop={handleDrop}
           onClick={() => inputRef.current?.click()}
           className={`border-2 border-dashed rounded-xl flex flex-col items-center justify-center cursor-pointer transition-colors ${isDragging
-            ? 'border-violet-400 bg-violet-50'
-            : 'border-neutral-200 hover:border-violet-400 hover:bg-violet-50'
+            ? 'border-violet-800 bg-violet-50'
+            : 'border-neutral-200 hover:border-violet-800 hover:bg-violet-50'
             }`}
         >
           <input
@@ -119,7 +119,7 @@ export default function FileUpload({ onAnalysisComplete }: Props) {
           <UploadCloud size={32} className="text-neutral-400 mb-3" />
           <p className="text-sm font-medium text-neutral-900">Arrastra tus archivos aquí</p>
           <p className="text-xs text-neutral-400 mt-1">
-            o <span className="text-violet-600 font-medium">selecciona</span> desde tu equipo
+            o <span className="text-violet-800 font-medium">selecciona</span> desde tu equipo
           </p>
           <p className="text-xs text-neutral-400 mt-3">Solo PDF</p>
         </div>
@@ -151,7 +151,7 @@ export default function FileUpload({ onAnalysisComplete }: Props) {
           <button
             onClick={handleConfirm}
             disabled={files.length === 0 || status === 'loading'}
-            className="w-full py-2.5 rounded-xl bg-violet-600 text-white text-sm font-semibold hover:bg-violet-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full py-2.5 rounded-xl bg-violet-800 text-white text-sm font-semibold hover:bg-violet-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {status === 'loading' ? 'Procesando...' : 'Confirmar carga'}
           </button>

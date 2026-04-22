@@ -6,25 +6,25 @@ interface CategoryMeta {
 }
 
 const CATEGORY: Record<string, CategoryMeta> = {
-  alimentacion: { label: 'Alimentación', classes: 'bg-ambar-light   text-ambar-dark' },
-  transporte: { label: 'Transporte', classes: 'bg-celeste-light text-celeste-dark' },
-  entretenimiento: { label: 'Entret.', classes: 'bg-rosa-light    text-rosa-dark' },
-  salud: { label: 'Salud', classes: 'bg-menta-light   text-menta-dark' },
-  educacion: { label: 'Educación', classes: 'bg-lavanda-light text-lavanda-dark' },
-  servicios: { label: 'Servicios', classes: 'bg-celeste-light text-celeste-dark' },
-  vestimenta: { label: 'Vestimenta', classes: 'bg-rosa-light    text-rosa-dark' },
-  ropa_calzado: { label: 'Vestimenta', classes: 'bg-rosa-light    text-rosa-dark' },
-  hogar: { label: 'Hogar', classes: 'bg-ambar-light   text-ambar-dark' },
-  viajes: { label: 'Viajes', classes: 'bg-celeste-light text-celeste-dark' },
-  nomina: { label: 'Nómina', classes: 'bg-menta-light   text-menta-dark' },
-  nomina_ingreso: { label: 'Nómina', classes: 'bg-menta-light   text-menta-dark' },
-  transferencia: { label: 'Transferencia', classes: 'bg-lavanda-light text-lavanda-dark' },
-  inversiones: { label: 'Inversiones', classes: 'bg-lavanda-light text-lavanda-dark' },
-  impuestos: { label: 'Impuestos', classes: 'bg-durazno-light text-durazno-dark' },
-  seguros: { label: 'Seguros', classes: 'bg-celeste-light text-celeste-dark' },
-  comisiones: { label: 'Comisiones', classes: 'bg-durazno-light text-durazno-dark' },
-  comisiones_bancarias: { label: 'Comisiones', classes: 'bg-durazno-light text-durazno-dark' },
-  otros: { label: 'Otros', classes: 'bg-neutral-100   text-neutral-400' },
+  alimentacion: { label: 'Alimentación', classes: 'bg-ambar-light' },
+  transporte: { label: 'Transporte', classes: 'bg-celeste-light' },
+  entretenimiento: { label: 'Entret.', classes: 'bg-rosa-light' },
+  salud: { label: 'Salud', classes: 'bg-menta-light' },
+  educacion: { label: 'Educación', classes: 'bg-lavanda-light' },
+  servicios: { label: 'Servicios', classes: 'bg-celeste-light' },
+  vestimenta: { label: 'Vestimenta', classes: 'bg-rosa-light' },
+  ropa_calzado: { label: 'Vestimenta', classes: 'bg-rosa-light' },
+  hogar: { label: 'Hogar', classes: 'bg-ambar-light' },
+  viajes: { label: 'Viajes', classes: 'bg-celeste-light' },
+  nomina: { label: 'Nómina', classes: 'bg-menta-light' },
+  nomina_ingreso: { label: 'Nómina', classes: 'bg-menta-light' },
+  transferencia: { label: 'Transferencia', classes: 'bg-lavanda-light' },
+  inversiones: { label: 'Inversiones', classes: 'bg-lavanda-light' },
+  impuestos: { label: 'Impuestos', classes: 'bg-durazno-light' },
+  seguros: { label: 'Seguros', classes: 'bg-celeste-light' },
+  comisiones: { label: 'Comisiones', classes: 'bg-durazno-light' },
+  comisiones_bancarias: { label: 'Comisiones', classes: 'bg-durazno-light' },
+  otros: { label: 'Otros', classes: 'bg-neutral-100  text-neutral-400' },
 }
 
 const CARGO_TYPES = new Set([
@@ -78,14 +78,14 @@ export default function DataTable({ transactions }: Props) {
                       {(() => {
                         const cat = CATEGORY[tx.categoria]
                         return (
-                          <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${cat?.classes ?? 'bg-neutral-100 text-neutral-400'}`}>
+                          <span className={`text-xs font-medium px-2 py-0.5 rounded-full text-neutral-600 ${cat?.classes ?? 'bg-neutral-100'}`}>
                             {cat?.label ?? tx.categoria}
                           </span>
                         )
                       })()}
                     </td>
-                    <td className={`py-3 font-semibold whitespace-nowrap ${esCargo ? 'text-red-500' : 'text-emerald-600'}`}>
-                      {esCargo ? '-' : '+'}${tx.monto.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+                    <td className={`py-3 font-semibold whitespace-nowrap ${esCargo ? 'text-neutral-600' : 'text-emerald-600'}`}>
+                      {esCargo ?? '+'}${tx.monto.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                     </td>
                   </tr>
                 )

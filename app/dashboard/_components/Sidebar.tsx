@@ -16,7 +16,7 @@ export default function Sidebar() {
   return (
     <aside className="w-60 shrink-0 flex flex-col bg-white text-neutral-100 min-h-screen">
       <div className="px-6 py-5">
-        <a href='/' className="text-3xl font-bold tracking-tight text-violet-700">finia</a>
+        <a href='/' className="text-3xl font-bold tracking-tight text-violet-800">finia</a>
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-2">
@@ -28,7 +28,7 @@ export default function Sidebar() {
               key={href}
               href={href}
               className={`flex items-center gap-3 px-3 py-2 rounded-md text-md transition-colors ${isActive
-                ? 'bg-violet-200 text-violet-900 font-semibold'
+                ? 'bg-violet-200 text-violet-800 font-semibold'
                 : 'text-neutral-600 hover:bg-violet-100 hover:text-violet-800'
                 }`}
             >

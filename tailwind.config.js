@@ -20,7 +20,7 @@ module.exports = {
         // Clases: bg-violet-*, text-violet-*, border-violet-*
         // ─────────────────────────────────────────────
         violet: {
-          50:  '#FDF4FF',   // fondo tintado, hover states
+          50:  '#F7F5FF',   // fondo tintado, hover states
           100: '#F3E8FF',   // tag bg, badge bg
           200: '#E9D5FF',   // borde suave, divisores
           300: '#D8B4FE',   // disabled text, placeholder
