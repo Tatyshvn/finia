@@ -1,19 +1,34 @@
-import { Bell } from 'lucide-react'
+'use client'
+
+import Link from 'next/link'
+import { Bell, Zap } from 'lucide-react'
+import { useCredits } from '@/lib/hooks/useCredits'
 
 export default function Header() {
-  return (
-    <header className="h-14 shrink-0 flex items-center justify-end px-6 bg-white">
+  const { balance, loading } = useCredits()
 
-      <div className="flex items-center justify-between gap-3">
-        <button
-          type="button"
-          aria-label="Notifications"
-          className="relative p-2 rounded-md text-neutral-500 hover:bg-violet-100 hover:cursor-point transition-colors"
-        >
-          <Bell size={20} />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
-        </button>
-      </div>
+  return (
+    <header className="h-14 shrink-0 flex items-center justify-end px-6 bg-white gap-3">
+
+      <Link
+        href="/upgrade"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-violet-50 hover:bg-violet-100 transition-colors group"
+      >
+        <Zap size={13} className="text-violet-500 group-hover:text-violet-700 transition-colors" />
+        <span className="text-xs font-semibold text-violet-700">
+          {loading ? '—' : `${balance ?? 0} crédito${balance === 1 ? '' : 's'}`}
+        </span>
+      </Link>
+
+      <button
+        type="button"
+        aria-label="Notifications"
+        className="relative p-2 rounded-md text-neutral-500 hover:bg-violet-100 transition-colors"
+      >
+        <Bell size={20} />
+        <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
+      </button>
+
     </header>
   )
 }

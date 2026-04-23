@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Receipt, BarChart2 } from 'lucide-react'
+import { LayoutDashboard, Receipt, BarChart2, Zap } from 'lucide-react'
 
 const navItems = [
   { href: '/dashboard', label: 'Resumen', icon: LayoutDashboard },
@@ -38,6 +38,24 @@ export default function Sidebar() {
           )
         })}
       </nav>
+
+      <div className="px-4 pb-3">
+        <div className="rounded-xl bg-violet-700 p-4">
+          <div className="flex items-center gap-1.5 mb-1">
+            <Zap size={13} className="text-violet-200" />
+            <p className="text-sm font-semibold text-white">Mejora tu plan</p>
+          </div>
+          <p className="text-xs text-violet-200 leading-relaxed mb-3">
+            Más análisis y funciones avanzadas para tus finanzas
+          </p>
+          <Link
+            href="/upgrade"
+            className="block text-center text-xs font-semibold bg-white text-violet-700 rounded-lg py-1.5 hover:bg-violet-50 transition-colors"
+          >
+            Ver planes →
+          </Link>
+        </div>
+      </div>
 
       <div className="px-4 py-4">
         <div className="flex items-center gap-3">
