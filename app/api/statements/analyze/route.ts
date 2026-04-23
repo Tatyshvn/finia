@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { analyzeStatementText } from "@/lib/services/groq"
+import { createClient } from "@/lib/supabase/server"
 
 interface AnalyzeRequestBody {
   text: string
@@ -7,8 +8,27 @@ interface AnalyzeRequestBody {
 }
 
 export async function POST(request: NextRequest) {
-  let body: AnalyzeRequestBody
+  const supabase = await createClient()
 
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  if (authError || !user) {
+    return NextResponse.json({ error: "No autenticado" }, { status: 401 })
+  }
+
+  const { data: credits, error: creditsError } = await supabase
+    .from("credits")
+    .select("balance")
+    .eq("user_id", user.id)
+    .single()
+
+  if (creditsError || !credits || credits.balance < 1) {
+    return NextResponse.json(
+      { error: "Sin créditos disponibles", code: "NO_CREDITS" },
+      { status: 402 }
+    )
+  }
+
+  let body: AnalyzeRequestBody
   try {
     body = await request.json()
   } catch {
@@ -27,6 +47,16 @@ export async function POST(request: NextRequest) {
     )
   }
 
+  const { error: rpcError } = await supabase.rpc("consume_credit", {
+    p_user_id: user.id,
+  })
+  if (rpcError) {
+    return NextResponse.json(
+      { error: "Error al consumir crédito. Intenta de nuevo." },
+      { status: 500 }
+    )
+  }
+
   try {
     const data = await analyzeStatementText(text)
 
@@ -37,7 +67,7 @@ export async function POST(request: NextRequest) {
         caracteres_analizados: text.length,
         transacciones_encontradas: data.transacciones.length,
       },
-      data
+      data,
     })
   } catch (error: unknown) {
     if (error instanceof Error && error.message.includes("429")) {
