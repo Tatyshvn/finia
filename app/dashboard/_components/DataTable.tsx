@@ -39,14 +39,14 @@ interface Props {
 
 export default function DataTable({ transactions }: Props) {
   return (
-    <section className="bg-white rounded-2xl p-6 shadow-sm">
-      <div className="flex items-center justify-between mb-6">
+    <section className="bg-white rounded-2xl p-6 shadow-sm flex flex-col h-full">
+      <div className="shrink-0 flex items-center justify-between mb-6">
         <h2 className="text-sm font-bold tracking-widest text-violet-700 uppercase">
           Transacciones
         </h2>
       </div>
 
-      <div className="overflow-x-auto overflow-y-auto max-h-[540px]">
+      <div className="flex-1 min-h-0 overflow-x-auto overflow-y-auto">
         <table className="w-full text-sm">
           <thead className="sticky top-0 bg-white">
             <tr className="border-b border-neutral-200">

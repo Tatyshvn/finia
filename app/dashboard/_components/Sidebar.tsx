@@ -2,24 +2,37 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Receipt, BarChart2, Zap } from 'lucide-react'
+import {
+  LayoutDashboard,
+  ScanText,
+  ArrowLeftRight,
+  BarChart2,
+  Lightbulb,
+  UserCircle,
+  Zap,
+} from 'lucide-react'
 
 const navItems = [
-  { href: '/dashboard', label: 'Resumen', icon: LayoutDashboard },
-  { href: '/dashboard/gastos', label: 'Gastos', icon: Receipt },
-  { href: '/dashboard/reportes', label: 'Reportes', icon: BarChart2 },
+  { href: '/dashboard',              label: 'Resumen',        icon: LayoutDashboard },
+  { href: '/dashboard/analizar',     label: 'Analizar',       icon: ScanText        },
+  { href: '/dashboard/transacciones',label: 'Transacciones',  icon: ArrowLeftRight  },
+  { href: '/dashboard/reportes',     label: 'Reportes',       icon: BarChart2       },
+  { href: '/dashboard/consejos',     label: 'Consejos',       icon: Lightbulb       },
+  { href: '/dashboard/perfil',       label: 'Perfil',         icon: UserCircle      },
 ]
 
 export default function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="w-60 shrink-0 flex flex-col bg-white text-neutral-100 min-h-screen">
+    <aside className="w-60 shrink-0 flex flex-col bg-white min-h-screen">
       <div className="px-6 py-5">
-        <a href='/' className="text-3xl font-bold tracking-tight text-violet-800">finia</a>
+        <Link href="/" className="text-3xl font-bold tracking-tight text-violet-800">
+          finia
+        </Link>
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-2">
+      <nav className="flex-1 px-3 py-2 space-y-1">
         {navItems.map(({ href, label, icon: Icon }) => {
           const isActive =
             href === '/dashboard' ? pathname === href : pathname.startsWith(href)
@@ -27,12 +40,13 @@ export default function Sidebar() {
             <Link
               key={href}
               href={href}
-              className={`flex items-center gap-3 px-3 py-2 rounded-md text-md transition-colors ${isActive
-                ? 'bg-violet-200 text-violet-800 font-semibold'
-                : 'text-neutral-600 hover:bg-violet-100 hover:text-violet-800'
-                }`}
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                isActive
+                  ? 'bg-violet-100 text-violet-800 font-semibold'
+                  : 'text-neutral-500 hover:bg-violet-50 hover:text-violet-800'
+              }`}
             >
-              <Icon size={18} />
+              <Icon size={17} />
               {label}
             </Link>
           )
@@ -57,16 +71,19 @@ export default function Sidebar() {
         </div>
       </div>
 
-      <div className="px-4 py-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-violet-200 flex items-center justify-center text-sm text-violet-900 font-semibold">
+      <div className="px-4 py-4 border-t border-neutral-100">
+        <Link
+          href="/dashboard/perfil"
+          className="flex items-center gap-3 group"
+        >
+          <div className="w-9 h-9 rounded-full bg-violet-100 flex items-center justify-center text-xs text-violet-900 font-semibold shrink-0 group-hover:bg-violet-200 transition-colors">
             TH
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-md font-medium text-neutral-900 truncate">Tatiana</p>
-            <p className="text-sm text-neutral-400 truncate">tatyshv@finia.app</p>
+            <p className="text-sm font-medium text-neutral-900 truncate">Tatiana</p>
+            <p className="text-xs text-neutral-400 truncate">tatyshv@finia.app</p>
           </div>
-        </div>
+        </Link>
       </div>
     </aside>
   )
