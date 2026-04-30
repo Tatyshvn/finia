@@ -33,14 +33,6 @@ interface Props {
   transactions: Transaction[]
 }
 
-function formatPeriod(transactions: Transaction[]): string {
-  if (transactions.length === 0) return ''
-  const latest = [...transactions].sort((a, b) => b.fecha.localeCompare(a.fecha))[0].fecha
-  const date = new Date(latest + 'T00:00:00')
-  const month = date.toLocaleDateString('es-MX', { month: 'long' })
-  return `${month.charAt(0).toUpperCase() + month.slice(1)} ${date.getFullYear()}`
-}
-
 function formatAmount(amount: number): string {
   if (amount >= 1000) return `$${(amount / 1000).toFixed(1)}k`
   return `$${amount.toFixed(0)}`
@@ -55,7 +47,6 @@ export default function SpendingByCategory({ transactions }: Props) {
 
   const sorted = [...totals.entries()].sort((a, b) => b[1] - a[1])
   const max = sorted[0]?.[1] ?? 1
-  const period = formatPeriod(transactions)
 
   return (
     <section className="bg-white rounded-2xl p-6 shadow-sm">
@@ -63,11 +54,6 @@ export default function SpendingByCategory({ transactions }: Props) {
         <h2 className="text-sm font-bold tracking-widest text-violet-700 uppercase">
           Gastos por categoría
         </h2>
-        {period && (
-          <span className="text-sm text-neutral-400">
-            Gasto por categoría · {period}
-          </span>
-        )}
       </div>
 
       {sorted.length === 0 ? (

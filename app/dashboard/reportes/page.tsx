@@ -1,26 +1,45 @@
 'use client'
 
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { ScanText } from 'lucide-react'
+import { ScanText, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useAnalysis } from '@/lib/context/analysis'
-import InsightsPanel from '../_components/InsightsPanel'
 import SpendingByCategory from '../_components/SpendingByCategory'
+import SpendingByConcept from '../_components/SpendingByConcept'
+import MonthlySpendingChart from '../_components/MonthlySpendingChart'
+
+function monthLabel(ym: string) {
+  const [year, month] = ym.split('-')
+  const date = new Date(Number(year), Number(month) - 1, 1)
+  return date.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' })
+}
 
 export default function ReportesPage() {
   const { statement, loading } = useAnalysis()
+  const [selectedIndex, setSelectedIndex] = useState(0)
+
+  const months = useMemo(() => {
+    if (!statement) return []
+    const set = new Set(statement.transacciones.map(tx => tx.fecha.slice(0, 7)))
+    return Array.from(set).sort()
+  }, [statement])
+
+  const filtered = useMemo(() => {
+    if (!statement || months.length === 0) return []
+    return statement.transacciones.filter(tx => tx.fecha.startsWith(months[selectedIndex]))
+  }, [statement, months, selectedIndex])
 
   if (loading) {
     return (
-
       <div className="flex flex-col gap-6 animate-pulse">
         <div className="h-8 w-40 rounded-xl bg-neutral-200" />
+        <div className="h-12 rounded-xl bg-neutral-200" />
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_2fr]">
           <div className="h-80 rounded-2xl bg-neutral-200" />
           <div className="h-80 rounded-2xl bg-neutral-200" />
         </div>
+        <div className="h-64 rounded-2xl bg-neutral-200" />
       </div>
-
-
     )
   }
 
@@ -45,7 +64,6 @@ export default function ReportesPage() {
             Ir a Analizar
           </Link>
         </div>
-
       </div>
     )
   }
@@ -54,10 +72,55 @@ export default function ReportesPage() {
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-bold text-neutral-900">Reportes</h1>
 
+      {/* Month selector — controls SpendingByCategory and SpendingByConcept */}
+      {months.length > 1 && (
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setSelectedIndex(i => Math.max(0, i - 1))}
+            disabled={selectedIndex === 0}
+            className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 hover:bg-violet-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronLeft size={20} />
+          </button>
+
+          <div className="flex flex-wrap gap-1">
+            {months.map((ym, i) => (
+              <button
+                key={ym}
+                onClick={() => setSelectedIndex(i)}
+                className={`px-3 py-1 text-sm font-medium rounded-lg capitalize transition-colors ${
+                  i === selectedIndex
+                    ? 'bg-violet-700 text-white'
+                    : 'text-neutral-500 hover:bg-neutral-100'
+                }`}
+              >
+                {monthLabel(ym)}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={() => setSelectedIndex(i => Math.min(months.length - 1, i + 1))}
+            disabled={selectedIndex === months.length - 1}
+            className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronRight size={20} />
+          </button>
+        </div>
+      )}
+
+      {/* Top row: monthly trend (all months) + category breakdown (filtered month) */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_2fr]">
-        <InsightsPanel transactions={statement.transacciones} />
-        <SpendingByCategory transactions={statement.transacciones} />
+        <MonthlySpendingChart
+          transactions={statement.transacciones}
+          months={months}
+        />
+
+        <SpendingByCategory transactions={filtered} />
       </div>
+
+      {/* Bottom row: concept breakdown (filtered month) */}
+      <SpendingByConcept transactions={filtered} />
     </div>
   )
 }
