@@ -1,33 +1,7 @@
 import type { Transaction } from '@/types/statements'
+import { getCategoryMeta } from '@/lib/categories'
 
 const CARGO_TYPES = new Set(['cargo', 'transferencia_enviada', 'retiro', 'comision'])
-
-interface CategoryMeta {
-  label: string
-  emoji: string
-  color: string
-}
-
-const CATEGORY_META: Record<string, CategoryMeta> = {
-  alimentacion: { label: 'Comida', emoji: '🍽️', color: '#E05A2B' },
-  transporte: { label: 'Transporte', emoji: '🚗', color: '#0D9488' },
-  entretenimiento: { label: 'Ocio', emoji: '🎬', color: '#D97706' },
-  salud: { label: 'Salud', emoji: '🩺', color: '#DC2626' },
-  educacion: { label: 'Educación', emoji: '📚', color: '#7C3AED' },
-  servicios: { label: 'Tecnología', emoji: '💻', color: '#4F46E5' },
-  vestimenta: { label: 'Moda', emoji: '👕', color: '#BE185D' },
-  ropa_calzado: { label: 'Moda', emoji: '🥾', color: '#BE185D' },
-  hogar: { label: 'Hogar', emoji: '🏠', color: '#2563EB' },
-  viajes: { label: 'Viajes', emoji: '✈️', color: '#0D9488' },
-  nomina: { label: 'Nómina', emoji: '💵', color: '#059669' },
-  transferencia: { label: 'Transferencia', emoji: '🔄', color: '#7C3AED' },
-  inversiones: { label: 'Ahorro', emoji: '💰', color: '#059669' },
-  impuestos: { label: 'Impuestos', emoji: '🧾', color: '#E05A2B' },
-  seguros: { label: 'Seguros', emoji: '🛡️', color: '#2563EB' },
-  comisiones: { label: 'Comisiones', emoji: '💳', color: '#E05A2B' },
-  comisiones_bancarias: { label: 'Comisiones', emoji: '💳', color: '#E05A2B' },
-  otros: { label: 'Otros', emoji: '📦', color: '#78716C' },
-}
 
 interface Props {
   transactions: Transaction[]
@@ -63,7 +37,7 @@ export default function SpendingByCategory({ transactions }: Props) {
       ) : (
         <div className="flex flex-col gap-3">
           {sorted.map(([cat, total]) => {
-            const meta = CATEGORY_META[cat] ?? { label: cat, emoji: '•', color: '#78716C' }
+            const meta = getCategoryMeta(cat)
             const pct = (total / max) * 100
             return (
               <div key={cat} className="flex items-center gap-3">
