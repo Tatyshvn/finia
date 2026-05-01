@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Bell, Zap } from 'lucide-react'
+import { Zap } from 'lucide-react'
 import { useCredits } from '@/lib/hooks/useCredits'
 
 export default function Header() {
@@ -19,15 +19,6 @@ export default function Header() {
           {loading ? '—' : `${balance ?? 0} crédito${balance === 1 ? '' : 's'}`}
         </span>
       </Link>
-
-      <button
-        type="button"
-        aria-label="Notifications"
-        className="relative p-2 rounded-md text-neutral-500 hover:bg-violet-100 transition-colors"
-      >
-        <Bell size={20} />
-        <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
-      </button>
 
     </header>
   )

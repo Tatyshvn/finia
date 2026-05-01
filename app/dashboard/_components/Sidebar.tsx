@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -11,6 +12,7 @@ import {
   UserCircle,
   Zap,
 } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 const navItems = [
   { href: '/dashboard', label: 'Resumen', icon: LayoutDashboard },
@@ -21,8 +23,27 @@ const navItems = [
   { href: '/dashboard/perfil', label: 'Perfil', icon: UserCircle },
 ]
 
+function getInitials(name: string) {
+  const parts = name.trim().split(/\s+/)
+  return parts.length >= 2
+    ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+    : name.slice(0, 2).toUpperCase()
+}
+
 export default function Sidebar() {
   const pathname = usePathname()
+  const [displayName, setDisplayName] = useState('')
+  const [email, setEmail] = useState('')
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return
+      const full = user.user_metadata?.full_name as string | undefined
+      setDisplayName(full ?? user.email?.split('@')[0] ?? '')
+      setEmail(user.email ?? '')
+    })
+  }, [])
 
   return (
     <aside className="w-60 shrink-0 flex flex-col bg-white min-h-screen">
@@ -76,11 +97,11 @@ export default function Sidebar() {
           className="flex items-center gap-3 group"
         >
           <div className="w-9 h-9 rounded-full bg-violet-100 flex items-center justify-center text-xs text-violet-900 font-semibold shrink-0 group-hover:bg-violet-200 transition-colors">
-            TH
+            {displayName ? getInitials(displayName) : '…'}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-neutral-900 truncate">Tatiana</p>
-            <p className="text-xs text-neutral-400 truncate">tatyshv@finia.app</p>
+            <p className="text-sm font-medium text-neutral-900 truncate">{displayName || '—'}</p>
+            <p className="text-xs text-neutral-400 truncate">{email || '—'}</p>
           </div>
         </Link>
       </div>
