@@ -6,20 +6,12 @@ import { ScanText, ChevronLeft, ChevronRight, Download } from 'lucide-react'
 import { useAnalysis } from '@/lib/context/analysis'
 import DataTable from '../_components/DataTable'
 import type { Transaction } from '@/types/statements'
+import { getCategoryMeta } from '@/lib/categories'
 
 function monthLabel(ym: string) {
   const [year, month] = ym.split('-')
   const date = new Date(Number(year), Number(month) - 1, 1)
   return date.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' })
-}
-
-const CATEGORY_LABELS: Record<string, string> = {
-  alimentacion: 'Alimentación', transporte: 'Transporte', entretenimiento: 'Entretenimiento',
-  salud: 'Salud', educacion: 'Educación', servicios: 'Servicios', vestimenta: 'Vestimenta',
-  ropa_calzado: 'Vestimenta', hogar: 'Hogar', viajes: 'Viajes', nomina: 'Nómina',
-  nomina_ingreso: 'Nómina', transferencia: 'Transferencia', inversiones: 'Inversiones',
-  impuestos: 'Impuestos', seguros: 'Seguros', comisiones: 'Comisiones',
-  comisiones_bancarias: 'Comisiones', otros: 'Otros',
 }
 
 const CARGO_TYPES = new Set(['cargo', 'transferencia_enviada', 'retiro', 'comision'])
@@ -29,7 +21,7 @@ async function exportToExcel(transactions: Transaction[], filename: string) {
   const rows = transactions.map(tx => ({
     Fecha: tx.fecha,
     Descripción: tx.comercio ?? tx.descripcion,
-    Categoría: CATEGORY_LABELS[tx.categoria] ?? tx.categoria,
+    Categoría: getCategoryMeta(tx.categoria).label,
     Tipo: CARGO_TYPES.has(tx.tipo) ? 'Cargo' : 'Abono',
     Monto: tx.monto,
   }))
