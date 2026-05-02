@@ -86,6 +86,7 @@ export async function POST(request: NextRequest) {
       data,
     })
   } catch (error: unknown) {
+    console.error("[analyze] error:", error)
     if (error instanceof Error && error.message.includes("429")) {
       return NextResponse.json(
         { error: "Límite de Groq alcanzado. Intenta en unos minutos." },

@@ -21,6 +21,7 @@ export async function POST(request: NextRequest) {
     const results = await Promise.all(files.map(extractTextFromPdf))
     return NextResponse.json({ results })
   } catch (error: unknown) {
+    console.error("[parse-pdf] error:", error)
     const message = error instanceof Error ? error.message : "Error al leer el PDF"
     return NextResponse.json({ error: message }, { status: 422 })
   }

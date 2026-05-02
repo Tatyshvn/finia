@@ -69,6 +69,7 @@ export default function FileUpload({ onAnalysisComplete }: Props) {
       if (!parsed?.length) throw new Error('No se pudo extraer texto del PDF')
 
       setResults(parsed)
+      console.log(parsed)
 
       for (const { text, name } of parsed) {
         const analyzeRes = await fetch('/api/statements/analyze', {

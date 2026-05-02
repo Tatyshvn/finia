@@ -42,6 +42,46 @@ Reglas:
 - OXXO, WALMART, SORIANA → "alimentacion". UBER, DIDI, PEMEX → "transporte". NETFLIX, SPOTIFY, CINEPOLIS → "entretenimiento".
 - No incluyas texto fuera del JSON.`;
 
+const OCR_PROMPT = `Eres un OCR especializado en estados de cuenta bancarios mexicanos.
+Extrae TODO el texto visible de la imagen tal cual aparece, preservando el orden de lectura y la estructura tabular cuando aplique.
+
+Reglas:
+- Conserva fechas, folios, descripciones, depósitos, retiros y saldos en el mismo renglón cuando estén alineados en una fila de tabla.
+- Usa tabuladores (\\t) para separar columnas dentro de una misma fila de tabla.
+- Conserva los montos exactamente como aparecen, con punto decimal.
+- No agregues texto, comentarios ni markdown. Devuelve solo el texto extraído.
+- Si la página no contiene información relevante, devuelve una cadena vacía.`
+
+export async function extractTextFromPageImages(
+  imageDataUrls: string[]
+): Promise<string> {
+  if (imageDataUrls.length === 0) return ""
+
+  const results: string[] = []
+  for (let i = 0; i < imageDataUrls.length; i++) {
+    const completion = await groq.chat.completions.create({
+      model: "meta-llama/llama-4-scout-17b-16e-instruct",
+      temperature: 0,
+      max_tokens: 8000,
+      messages: [
+        { role: "system", content: OCR_PROMPT },
+        {
+          role: "user",
+          content: [
+            { type: "text", text: `Página ${i + 1}: extrae el texto.` },
+            { type: "image_url", image_url: { url: imageDataUrls[i] } },
+          ],
+        },
+      ],
+    })
+    results.push(completion.choices[0]?.message?.content ?? "")
+  }
+
+  return results
+    .map((t, i) => `--- Página ${i + 1} ---\n${t.trim()}`)
+    .join("\n\n")
+}
+
 const NORMALIZE_PROMPT = `Eres un normalizador de nombres de comercios y conceptos en transacciones bancarias mexicanas.
 Recibirás una lista de descripciones de transacciones (campo "concepts") y debes devolver ÚNICAMENTE un JSON válido con el mapeo de cada descripción a un nombre comercial limpio y reconocible.
 
@@ -90,7 +130,7 @@ export async function analyzeStatementText(
   const completion = await groq.chat.completions.create({
     model: "llama-3.3-70b-versatile",
     temperature: 0.1,
-    max_tokens: 8192,
+    max_tokens: 4000,
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
       {
