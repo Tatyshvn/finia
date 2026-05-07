@@ -16,9 +16,9 @@ import { createClient } from '@/lib/supabase/client'
 
 const navItems = [
   { href: '/dashboard', label: 'Resumen', icon: LayoutDashboard },
-  { href: '/dashboard/analizar', label: 'Analizar', icon: ScanText },
+  { href: '/dashboard/estados-de-cuenta', label: 'Estados de cuenta', icon: ScanText },
   { href: '/dashboard/transacciones', label: 'Transacciones', icon: ArrowLeftRight },
-  { href: '/dashboard/reportes', label: 'Reportes', icon: BarChart2 },
+  { href: '/dashboard/analisis', label: 'Análisis', icon: BarChart2 },
   { href: '/dashboard/consejos', label: 'Consejos', icon: Lightbulb },
   { href: '/dashboard/perfil', label: 'Perfil', icon: UserCircle },
 ]

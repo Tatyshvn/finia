@@ -98,7 +98,7 @@ export default function FileUpload({ onAnalysisComplete }: Props) {
     <section className="bg-white rounded-2xl p-6 shadow-sm">
       <h2 className="text-lg font-semibold text-neutral-900 mb-4">Cargar archivos</h2>
 
-      <div className="grid grid-cols-2 gap-4 h-64">
+      <div className="grid grid-cols-3 gap-4 h-40">
 
         {/* Columna izquierda — zona de carga */}
         <div
@@ -106,7 +106,7 @@ export default function FileUpload({ onAnalysisComplete }: Props) {
           onDragLeave={() => setIsDragging(false)}
           onDrop={handleDrop}
           onClick={() => inputRef.current?.click()}
-          className={`border-2 border-dashed rounded-xl flex flex-col items-center justify-center cursor-pointer transition-colors ${isDragging
+          className={`col-span-1 border-2 border-dashed rounded-xl flex flex-col items-center justify-center cursor-pointer transition-colors ${isDragging
             ? 'border-violet-800 bg-violet-50'
             : 'border-neutral-200 hover:border-violet-800 hover:bg-violet-50'
             }`}
@@ -128,7 +128,7 @@ export default function FileUpload({ onAnalysisComplete }: Props) {
         </div>
 
         {/* Columna derecha — lista de archivos */}
-        <div className="flex flex-col gap-3 min-h-0">
+        <div className="col-span-2 flex flex-col gap-3 min-h-0">
           <div className="flex-1 overflow-y-auto space-y-2 pr-1 min-h-0">
             {files.length === 0 ? (
               <div className="h-full flex items-center justify-center">

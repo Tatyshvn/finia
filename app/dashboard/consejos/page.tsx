@@ -79,7 +79,12 @@ export default function ConsejosPage() {
   if (entries.length === 0) {
     return (
       <div className="flex flex-col gap-6">
-        <h1 className="text-2xl font-bold text-neutral-900">Consejos financieros</h1>
+        <div>
+          <h1 className="text-2xl font-bold text-neutral-900">Consejos financieros</h1>
+          <p className="text-sm text-neutral-500 mt-1">
+            Recomendaciones personalizadas generadas a partir de tus gastos.
+          </p>
+        </div>
         <div className="flex flex-col items-center justify-center gap-4 rounded-2xl bg-white p-16 shadow-sm text-center">
           <div className="w-14 h-14 rounded-2xl bg-violet-100 flex items-center justify-center">
             <ScanText size={28} className="text-violet-600" />
@@ -87,20 +92,20 @@ export default function ConsejosPage() {
           <div>
             <p className="text-base font-semibold text-neutral-900">Sin consejos generados aún</p>
             <p className="text-sm text-neutral-400 mt-1 max-w-xs">
-              Ve a Reportes, selecciona un mes y presiona{' '}
+              Ve a Análisis, selecciona un mes y presiona{' '}
               <span className="font-medium text-violet-600">Generar consejos financieros</span>{' '}
               para obtener recomendaciones personalizadas.
             </p>
           </div>
           <Link
-            href="/dashboard/reportes"
+            href="/dashboard/analisis"
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm text-white
               bg-gradient-to-r from-violet-600 to-fuchsia-500
               hover:from-violet-700 hover:to-fuchsia-600
               shadow-md transition-all"
           >
             <Sparkles size={15} />
-            Ir a Reportes
+            Ir a Análisis
           </Link>
         </div>
       </div>
@@ -109,9 +114,14 @@ export default function ConsejosPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-neutral-900">Consejos financieros</h1>
-        <p className="text-sm text-neutral-400">{entries.length} {entries.length === 1 ? 'mes guardado' : 'meses guardados'}</p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-neutral-900">Consejos financieros</h1>
+          <p className="text-sm text-neutral-500 mt-1">
+            Recomendaciones personalizadas generadas a partir de tus gastos.
+          </p>
+        </div>
+        <p className="text-sm text-neutral-500 mt-1.5 shrink-0">{entries.length} {entries.length === 1 ? 'mes guardado' : 'meses guardados'}</p>
       </div>
 
       <div className="flex flex-col gap-3">
@@ -121,7 +131,7 @@ export default function ConsejosPage() {
       </div>
 
       <p className="text-xs text-neutral-400 text-center">
-        Genera nuevos consejos desde la página de Reportes · Powered by Groq · Llama 3.3
+        Genera nuevos consejos desde la página de Análisis · Powered by Groq · Llama 3.3
       </p>
     </div>
   )

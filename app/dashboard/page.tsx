@@ -1,10 +1,9 @@
 'use client'
 
-import Link from 'next/link'
-import { ScanText } from 'lucide-react'
 import { useAnalysis } from '@/lib/context/analysis'
 import StatCards from './_components/StatCards'
 import RecentTransactions from './_components/RecentTransactions'
+import EmptyAnalysisCTA from './_components/EmptyAnalysisCTA'
 
 export default function Dashboard() {
   const { statement, loading } = useAnalysis()
@@ -24,18 +23,23 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-neutral-900">Resumen</h1>
+    <div className="flex flex-col gap-6 min-h-full">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-neutral-900">Resumen</h1>
+          <p className="text-sm text-neutral-500 mt-1">
+            Vista general de tu actividad financiera reciente.
+          </p>
+        </div>
         {statement && (
-          <span className="text-xs text-neutral-400">
+          <span className="text-xs text-neutral-500 mt-1.5 shrink-0">
             {statement.resumen.banco} · {statement.resumen.periodo_inicio} — {statement.resumen.periodo_fin}
           </span>
         )}
       </div>
 
       {!statement ? (
-        <EmptyState />
+        <EmptyAnalysisCTA />
       ) : (
         <>
           <StatCards
@@ -45,28 +49,6 @@ export default function Dashboard() {
           <RecentTransactions transactions={statement.transacciones} />
         </>
       )}
-    </div>
-  )
-}
-
-function EmptyState() {
-  return (
-    <div className="flex flex-col items-center justify-center gap-4 rounded-2xl bg-white p-16 shadow-sm text-center">
-      <div className="w-14 h-14 rounded-2xl bg-violet-100 flex items-center justify-center">
-        <ScanText size={28} className="text-violet-600" />
-      </div>
-      <div>
-        <p className="text-base font-semibold text-neutral-900">Aún no tienes análisis</p>
-        <p className="text-sm text-neutral-400 mt-1 max-w-xs">
-          Sube tu primer estado de cuenta y Finia hará el resto
-        </p>
-      </div>
-      <Link
-        href="/dashboard/analizar"
-        className="px-5 py-2.5 bg-violet-700 text-white text-sm font-semibold rounded-xl hover:bg-violet-800 transition-colors"
-      >
-        Analizar estado de cuenta
-      </Link>
     </div>
   )
 }

@@ -1,14 +1,14 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import Link from 'next/link'
-import { ScanText, ChevronLeft, ChevronRight, Sparkles, Download, Loader2 } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Sparkles, Download, Loader2 } from 'lucide-react'
 import { useAnalysis } from '@/lib/context/analysis'
 import { useAdviceHistory } from '@/lib/hooks/useAdviceHistory'
 import SpendingByCategory from '../_components/SpendingByCategory'
 import SpendingByConcept from '../_components/SpendingByConcept'
 import MonthlySpendingChart from '../_components/MonthlySpendingChart'
 import AdviceModal from '../_components/AdviceModal'
+import EmptyAnalysisCTA from '../_components/EmptyAnalysisCTA'
 
 function monthLabel(ym: string) {
   const [year, month] = ym.split('-')
@@ -16,7 +16,7 @@ function monthLabel(ym: string) {
   return date.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' })
 }
 
-export default function ReportesPage() {
+export default function AnalisisPage() {
   const { statement, loading } = useAnalysis()
   const { entries: adviceEntries } = useAdviceHistory()
   const [selectedIndex, setSelectedIndex] = useState(0)
@@ -80,25 +80,17 @@ export default function ReportesPage() {
 
   if (!statement) {
     return (
-      <div className="flex flex-col gap-6">
-        <div className="shrink-0 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-neutral-900">Reportes</h1>
+      <div className="flex flex-col gap-6 min-h-full">
+        <div className="shrink-0">
+          <h1 className="text-2xl font-bold text-neutral-900">Análisis</h1>
+          <p className="text-sm text-neutral-500 mt-1">
+            Desglose analítico de tus gastos. Descarga el reporte en PDF y genera consejos financieros personalizados.
+          </p>
         </div>
-        <div className="flex flex-col items-center justify-center gap-4 rounded-2xl bg-white p-16 shadow-sm text-center">
-          <div className="w-14 h-14 rounded-2xl bg-violet-100 flex items-center justify-center">
-            <ScanText size={28} className="text-violet-600" />
-          </div>
-          <div>
-            <p className="text-base font-semibold text-neutral-900">Sin datos para reportes</p>
-            <p className="text-sm text-neutral-400 mt-1">Analiza un estado de cuenta para ver tus gráficas aquí</p>
-          </div>
-          <Link
-            href="/dashboard/analizar"
-            className="px-5 py-2.5 bg-violet-700 text-white text-sm font-semibold rounded-xl hover:bg-violet-800 transition-colors"
-          >
-            Ir a Analizar
-          </Link>
-        </div>
+        <EmptyAnalysisCTA
+          title="Sin datos para análisis"
+          subtitle="Sube un estado de cuenta para ver tus gráficas aquí"
+        />
       </div>
     )
   }
@@ -106,7 +98,12 @@ export default function ReportesPage() {
   return (
     <>
       <div className="flex flex-col gap-6">
-        <h1 className="text-2xl font-bold text-neutral-900">Reportes</h1>
+        <div>
+          <h1 className="text-2xl font-bold text-neutral-900">Análisis</h1>
+          <p className="text-sm text-neutral-500 mt-1">
+            Desglose analítico de tus gastos por categorías, conceptos y tendencias mensuales. Descarga el reporte en PDF y genera consejos financieros personalizados.
+          </p>
+        </div>
 
         {/* Month selector + advice button */}
         <div className="flex items-center justify-between gap-4 flex-wrap">

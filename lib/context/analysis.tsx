@@ -8,6 +8,7 @@ interface AnalysisContextValue {
   statement: ParsedStatement | null
   setStatement: (s: ParsedStatement | null) => void
   addStatement: (s: ParsedStatement) => void
+  refresh: () => Promise<void>
   loading: boolean
 }
 
@@ -30,34 +31,44 @@ export function AnalysisProvider({ children }: { children: ReactNode }) {
   const [statement, setStatement] = useState<ParsedStatement | null>(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    async function loadAll() {
-      const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { setLoading(false); return }
-
-      const { data } = await supabase
-        .from('analyses')
-        .select('resumen, transacciones, advertencias')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-
-      if (data && data.length > 0) {
-        const allTransactions = mergeTransactions(
-          [],
-          data.flatMap(row => row.transacciones as unknown as Transaction[])
-        )
-
-        setStatement({
-          resumen: data[0].resumen as unknown as StatementSummary,
-          transacciones: allTransactions,
-          advertencias: (data[0].advertencias ?? []) as unknown as string[],
-        })
-      }
+  const refresh = useCallback(async () => {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      setStatement(null)
       setLoading(false)
+      return
     }
-    loadAll()
+
+    const { data } = await supabase
+      .from('analyses')
+      .select('resumen, transacciones, advertencias')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+
+    if (data && data.length > 0) {
+      const allTransactions = mergeTransactions(
+        [],
+        data.flatMap(row => row.transacciones as unknown as Transaction[])
+      )
+
+      setStatement({
+        resumen: data[0].resumen as unknown as StatementSummary,
+        transacciones: allTransactions,
+        advertencias: (data[0].advertencias ?? []) as unknown as string[],
+      })
+    } else {
+      setStatement(null)
+    }
+    setLoading(false)
   }, [])
+
+  useEffect(() => {
+    async function run() {
+      await refresh()
+    }
+    run()
+  }, [refresh])
 
   const addStatement = useCallback((incoming: ParsedStatement) => {
     setStatement(prev => {
@@ -71,7 +82,7 @@ export function AnalysisProvider({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <AnalysisContext.Provider value={{ statement, setStatement, addStatement, loading }}>
+    <AnalysisContext.Provider value={{ statement, setStatement, addStatement, refresh, loading }}>
       {children}
     </AnalysisContext.Provider>
   )
